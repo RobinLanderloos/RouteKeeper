@@ -1,0 +1,3 @@
+# Domain model: Route, Step, Path, Marker
+
+A **Route** is one guide for one dungeon (keyed by instanceID) with an ordered list of **Steps** (`entrance`, `boss`, `quest`, `note`), each with a position (floor, x, y), title, note and optional quest tasks. A **Path** is the line drawn to a Step from the previous one and belongs to the Step it leads to, so reordering Steps carries their Paths along; a Path crossing floors is stored per floor. A **Marker** is a free map annotation outside the step order. Trash pull planning and mob positions (as in Mythic Dungeon Tools) are deliberately out of scope.

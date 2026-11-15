@@ -1,0 +1,29 @@
+## Interface: 16001
+## Title: RouteKeeper
+## Notes: Draw your own dungeon routes with notes, share them, and follow them in the dungeon.
+## Version: 0.1.0
+## SavedVariables: RouteKeeperDB
+## SavedVariablesPerCharacter: RouteKeeperCharDB
+
+Libs\LibStub\LibStub.lua
+Libs\LibDeflate\LibDeflate.lua
+Core\MapTiles.lua
+Core\Dungeons.lua
+Core\Serialize.lua
+Core\Model.lua
+Core\Codec.lua
+Core\Geometry.lua
+Core\Undo.lua
+Core\Progress.lua
+Core\MapView.lua
+Game\Report.lua
+Game\Widgets.lua
+Game\Store.lua
+Game\Quests.lua
+Game\MapArt.lua
+Game\MapCanvas.lua
+Game\Probe.lua
+Game\Share.lua
+Game\Run.lua
+Game\Editor.lua
+Game\Main.lua
