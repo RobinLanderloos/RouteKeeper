@@ -1,7 +1,10 @@
 ## Interface: 16001
 ## Title: RouteKeeper
 ## Notes: Draw your own dungeon routes with notes, share them, and follow them in the dungeon.
-## Version: 0.1.0
+## Author: Robin Landerloos
+## Version: 0.2.0
+## X-License: MIT
+## X-Website: https://github.com/RobinLanderloos/RouteKeeper
 ## SavedVariables: RouteKeeperDB
 ## SavedVariablesPerCharacter: RouteKeeperCharDB
 
