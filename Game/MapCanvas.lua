@@ -286,12 +286,14 @@ local function hideUnused(self)
   end
 end
 
-local function drawLine(self, a, b, color, alpha, thickness)
+-- layer: draw order inside the overlay (higher is on top), -8..7.
+local function drawLine(self, a, b, color, alpha, thickness, layer)
   local o = self.overlay
   local ax, ay = px(self, a.x, a.y)
   local bx, by = px(self, b.x, b.y)
   if o.CreateLine then
     local l = take(self, "lines", function() return o:CreateLine(nil, "ARTWORK") end)
+    if l.SetDrawLayer then l:SetDrawLayer("ARTWORK", layer or 0) end
     l:SetColorTexture(color[1], color[2], color[3], alpha)
     l:SetThickness(thickness)
     l:SetStartPoint("TOPLEFT", o, ax, ay)
@@ -302,6 +304,7 @@ local function drawLine(self, a, b, color, alpha, thickness)
     local steps = math.max(1, math.floor(len / 5))
     for i = 0, steps do
       local d = take(self, "lines", function() return o:CreateTexture(nil, "ARTWORK") end)
+      if d.SetDrawLayer then d:SetDrawLayer("ARTWORK", layer or 0) end
       d:SetColorTexture(color[1], color[2], color[3], alpha)
       d:SetSize(thickness, thickness)
       d:ClearAllPoints()
@@ -329,9 +332,9 @@ local function makePin(self)
   b.fill = b:CreateTexture(nil, "BORDER")
   b.fill:SetPoint("TOPLEFT", 2, -2)
   b.fill:SetPoint("BOTTOMRIGHT", -2, 2)
-  b.icon = b:CreateTexture(nil, "ARTWORK")
-  b.icon:SetSize(14, 14)
-  b.icon:SetPoint("BOTTOMLEFT", b, "TOPRIGHT", -8, -6)
+  b.icon = b:CreateTexture(nil, "ARTWORK") -- boss steps: a skull instead of the square
+  b.icon:SetAllPoints()
+  b.icon:SetTexture(ns.W.RaidIcon(8))
   b.glow = b:CreateTexture(nil, "OVERLAY")
   b.glow:SetPoint("TOPLEFT", -5, 5)
   b.glow:SetPoint("BOTTOMRIGHT", 5, -5)
@@ -339,6 +342,7 @@ local function makePin(self)
   b.glow:SetBlendMode("ADD")
   b.text = b:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
   b.text:SetPoint("CENTER", 0, 0)
+  b.text:SetShadowOffset(1, -1)
   b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
   b:SetScript("OnMouseDown", function(pin, button)
     if self.cb.onPinDown then self.cb.onPinDown(pin.index, button) end
@@ -389,6 +393,18 @@ end
 --   floor, stateOf = function(i) -> "current"|"open"|"done"|"skipped"|"na",
 --   selected = step index, selectedMarker = marker id, editPath = step index,
 -- }
+-- The focus step (selected in the editor, else the current one) is drawn
+-- bold and on top; with a focus, the other lines and pins fade back.
+local function lineStyle(i, state, focus, thick)
+  if focus == nil then -- nothing picked: every line plain
+    return COLORS[state] or COLORS.open, (state == "na") and 0.5 or 0.85, thick, 0
+  end
+  if i == focus then return nil, 1, thick + 3, 6 end
+  if state == "done" or state == "skipped" or state == "na" then return COLORS.done, 0.25, math.max(1, thick - 1), -6 end
+  if i == focus + 1 then return COLORS.open, 0.55, thick, -2 end -- the way on
+  return COLORS.open, 0.3, math.max(1, thick - 1), -4
+end
+
 function Canvas:DrawRoute(route, view)
   self.lastRoute, self.lastRouteView = route, view
   self.used = {}
@@ -396,16 +412,24 @@ function Canvas:DrawRoute(route, view)
   local floor = view.floor
   local stateOf = view.stateOf or function() return "open" end
   local thick = (self.width > 500 or self.zoom > 1.5) and 3 or 2
+  local focus = view.selected
+  if not focus then
+    for i = 1, #route.steps do
+      if stateOf(i) == "current" then focus = i; break end
+    end
+  end
+  self.focus = focus
 
   for i = 1, #route.steps do
     local state = stateOf(i)
-    local color = (view.selected == i) and COLORS.selected or COLORS[state] or COLORS.open
-    local alpha = (state == "na") and 0.5 or 0.95
+    local color, alpha, width, layer = lineStyle(i, state, focus, thick)
+    if i == focus then color = view.selected and COLORS.selected or COLORS.current end
     local pts = ns.Model.FullPath(route, i)
     for k = 1, #pts - 1 do
       local a, b = pts[k], pts[k + 1]
       if a.floor == floor and b.floor == floor then
-        drawLine(self, a, b, color, alpha, (state == "current" or view.selected == i) and thick + 1 or thick)
+        if i == focus then drawLine(self, a, b, { 0, 0, 0 }, 0.7, width + 3, layer - 1) end -- dark edge
+        drawLine(self, a, b, color, alpha, width, layer)
       elseif a.floor == floor then
         drawLabel(self, a.x, a.y, "to " .. Canvas.FloorName(route.dungeon.instanceID, b.floor), color)
       elseif b.floor == floor then
@@ -433,13 +457,29 @@ function Canvas:DrawRoute(route, view)
       local state = stateOf(i)
       local b = take(self, "pins", function() return makePin(self) end)
       b.index = i
-      local c = (state == "done" or state == "skipped" or state == "na") and COLORS.done or KIND_COLOR[s.kind]
+      local finished = state == "done" or state == "skipped" or state == "na"
+      local boss = s.kind == "boss"
+      local c = finished and COLORS.done or KIND_COLOR[s.kind] or KIND_COLOR.note
       b.fill:SetColorTexture(c[1], c[2], c[3], state == "na" and 0.4 or 1)
+      b.border:SetShown(not boss)
+      b.fill:SetShown(not boss)
+      b.icon:SetShown(boss)
+      b.icon:SetDesaturated(finished)
+      b.icon:SetAlpha(state == "na" and 0.5 or 1)
+      b.text:ClearAllPoints()
+      if boss then -- number in the corner so the skull stays readable
+        b.text:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 3, -3)
+      else
+        b.text:SetPoint("CENTER", 0, 0)
+      end
       b.text:SetText(state == "done" and "|cff00ff00" .. i .. "|r" or tostring(i))
-      b.icon:SetShown(s.kind == "boss")
-      if s.kind == "boss" then b.icon:SetTexture(ns.W.RaidIcon(8)) end
-      b.glow:SetShown(state == "current" or view.selected == i)
+      b.glow:SetShown(i == focus)
       b.glow:SetVertexColor(unpack(view.selected == i and COLORS.selected or COLORS.current))
+      local size = i == focus and 26 or 20
+      b:SetSize(size, size)
+      b:SetFrameLevel(self.overlay:GetFrameLevel() + (i == focus and 8 or 5))
+      local faded = focus and i ~= focus
+      b:SetAlpha(not faded and 1 or (state == "done" or state == "skipped" or state == "na") and 0.4 or 0.75)
       b:ClearAllPoints()
       b:SetPoint("CENTER", self.overlay, "TOPLEFT", px(self, s.x, s.y))
     end

@@ -799,7 +799,11 @@ function E.BossPicker(anchor)
       -- Keep a link learned from a kill when the same boss is picked again.
       local id = old and old.name and old.name:lower() == name:lower() and old.encounterID or nil
       E.SetBoss(step, name, id)
+      -- Known spawn spot: the pin goes there (Ctrl+Z puts it back).
+      local spot = ns.Dungeons.BossSpot(known, name)
+      if spot then step.floor, step.x, step.y = spot.floor, spot.x, spot.y end
     end)
+    if ns.Dungeons.BossSpot(known, name) then focusStep(state.selected); Refresh() end
   end, "No boss list for this dungeon. Type the boss's name in the box.")
 end
 

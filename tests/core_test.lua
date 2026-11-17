@@ -360,3 +360,21 @@ test("boss names: dungeon list first, then extras without doubles", function()
     if not ns.Dungeons.bosses[d.key] then error("no bosses for " .. d.key) end
   end
 end)
+
+test("boss spots: known bosses have a floor and a spot on the map", function()
+  local wc = ns.Dungeons.Find("wc")
+  local s = ns.Dungeons.BossSpot(wc, "lord cobrahn")
+  eq(s.floor, 1); eq(s.x, 0.1561); eq(s.y, 0.5851)
+  eq(ns.Dungeons.BossSpot(wc, "Somebody"), nil)
+  eq(ns.Dungeons.BossSpot({ name = "Blackmaw Hold" }, "Lord Cobrahn"), nil)
+  eq(ns.Dungeons.BossSpot(ns.Dungeons.Find("dm"), "Edwin VanCleef").floor, 2)
+  eq(ns.Dungeons.BossSpot(ns.Dungeons.Find("sfk"), "Archmage Arugal").floor, 6)
+  for key, spots in pairs(ns.Dungeons.bossSpots) do
+    local listed = {}
+    for _, n in ipairs(ns.Dungeons.bosses[key]) do listed[n] = true end
+    for name, p in pairs(spots) do
+      if not listed[name] then error(key .. ": " .. name .. " is not in the boss list") end
+      if p[2] < 0 or p[2] > 1 or p[3] < 0 or p[3] > 1 then error(key .. ": " .. name .. " is off the map") end
+    end
+  end
+end)

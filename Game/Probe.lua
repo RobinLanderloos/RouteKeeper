@@ -16,6 +16,14 @@ function Probe.Here()
     tostring(instanceID)))
   local d = ns.Dungeons.ByInstance(instanceID)
   Say("map art for this instance: " .. (d and d.name or "none (blank grid)"))
+  -- Live position: does the client tell us where we stand inside a dungeon?
+  local okP, py, px, pz, pmap = pcall(UnitPosition, "player")
+  Say(("position: %s y=%s x=%s z=%s map=%s"):format(okP and "ok" or "error", tostring(py), tostring(px),
+    tostring(pz), tostring(pmap)))
+  if C_Map and C_Map.GetBestMapForUnit then
+    local okM, ui = pcall(C_Map.GetBestMapForUnit, "player")
+    Say("uiMap: " .. tostring(okM and ui))
+  end
   local k = ns.lastKill
   Say("last boss kill: " .. (k and (k.name .. " (" .. k.id .. ")") or "none this session"))
   local count = 0

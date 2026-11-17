@@ -243,10 +243,12 @@ check("shadowfang keep offers floors 1, 7, 6", #sfk == 3 and sfk[1] == 1 and sfk
 check("floors have names", ns.MapCanvas.FloorName(33, 7) == "The Wall Walk" and ns.MapCanvas.FloorName(36, 2) == "Ironclad Cove"
   and ns.MapCanvas.FloorName(389, 1) == "Floor 1")
 
+
 -- select step 2 in the list, make it a boss linked to a kill
 click(ui.rows[2])
 check("list click selects", st.selected == 2)
 check("list click zooms in on the way to the step", canvas.zoom > 1.5, canvas.zoom)
+check("the selected step is the editor map's focus", canvas.focus == st.selected, tostring(canvas.focus))
 check("the view is centred between step 1 and step 2 (kept inside the map)", math.abs(canvas.cx - 0.25) < 0.02 and math.abs(canvas.cy - 0.3) < 0.01,
   canvas.cx .. "," .. canvas.cy)
 local zoomed = canvas.zoom
@@ -271,6 +273,9 @@ bossRow = pickRow("Gilnid")
 if bossRow then click(bossRow) end
 check("picking another boss names it, unlinked", r.steps[2].boss.name == "Gilnid" and r.steps[2].boss.encounterID == nil,
   tostring(r.steps[2].boss.name))
+local gs = ns.Dungeons.BossSpot(ns.Dungeons.Find("dm"), "Gilnid")
+check("picking a boss moves the pin to where the boss stands", gs ~= nil and r.steps[2].x == gs.x and r.steps[2].y == gs.y
+  and r.steps[2].floor == gs.floor, tostring(r.steps[2].x) .. "," .. tostring(r.steps[2].y))
 check("the name box shows the picked boss", ui.bossName:GetText() == "Gilnid", ui.bossName:GetText())
 check("the title follows the picked boss", r.steps[2].title == "Gilnid" and ui.title:GetText() == "Gilnid", tostring(r.steps[2].title))
 typeIn(ui.bossName, "Mr. Smite")
@@ -376,6 +381,7 @@ local _, _, runCanvas = ns.Run._state()
 check("run map zooms in on the first step", runCanvas.zoom > 1, runCanvas.zoom)
 slash("next")
 check("next moves to the boss", shownTexts():find("2. Rhahk'Zor", 1, true) ~= nil, shownTexts())
+check("the run map puts the current step in focus", runCanvas.focus == 2, tostring(runCanvas.focus))
 check("note shown, pipe kept", shownTexts():find("Pull him || to the door", 1, true) ~= nil)
 fire("ENCOUNTER_END", 1081, "Rhahk'Zor", 1, 5, 1)
 check("boss kill ticks the step", shownTexts():find("3. ", 1, true) ~= nil, shownTexts())

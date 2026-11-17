@@ -65,6 +65,24 @@ test("tile paths use the game's folder layout", function()
   eq(D.TilePath("TheDeadmines", 2, 12), "Interface\\WorldMap\\TheDeadmines\\TheDeadmines2_12")
 end)
 
+test("wailing caverns uses the addon's own full map tiles", function()
+  eq(D.Tile(D.Find("wc"), 1, 7), "Interface\\AddOns\\RouteKeeper\\Media\\Maps\\WailingCaverns\\WailingCaverns1_7")
+  eq(D.Tile(D.Find("dm"), 1, 7), "Interface\\WorldMap\\TheDeadmines\\TheDeadmines1_7")
+end)
+
+test("the addon's own map tiles are all there", function()
+  for key, floors in pairs(D.ownArt) do
+    for floor, prefix in pairs(floors) do
+      local rel = prefix:gsub("^Interface\\AddOns\\RouteKeeper\\", ""):gsub("\\", "/")
+      for t = 1, 12 do
+        local f = io.open(rel .. t .. ".blp", "rb")
+        eq(f ~= nil, true, key .. " floor " .. floor .. " tile " .. t)
+        if f then f:close() end
+      end
+    end
+  end
+end)
+
 test("dungeons are found by key, name or folder, ignoring case and punctuation", function()
   eq(D.Find("dm").folder, "TheDeadmines")
   eq(D.Find("The Deadmines").key, "dm")

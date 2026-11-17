@@ -102,6 +102,159 @@ Dungeons.bosses = {
     "Maleki the Pallid", "Ramstein the Gorger", "Baron Rivendare" },
 }
 
+-- Map tiles shipped with this addon, used in place of the game's:
+-- [dungeon][floor] = path prefix of the 12 tiles.
+-- The game's Wailing Caverns art is the patch 4.1 one, with the eastern maze
+-- cut out; Forever has the whole cave. Media/Maps/WailingCaverns holds the
+-- pre-4.1 tiles (Blizzard's art, see Media/Maps/README.md), same frame as the
+-- game's, so positions on the map don't change.
+Dungeons.ownArt = {
+  wc = { [1] = "Interface\\AddOns\\RouteKeeper\\Media\\Maps\\WailingCaverns\\WailingCaverns1_" },
+}
+
+-- Where bosses stand: [boss] = { floor, x, y } on the map art. From the
+-- creature spawns in AzerothCore's world database (WC, unchanged since
+-- vanilla), turned into map positions with the game's own UiMapAssignment
+-- data. Only bosses whose floor is certain are listed; the game data cannot
+-- tell the floor of a spot under several floors, so those are left out.
+Dungeons.bossSpots = {
+  rfc = {
+    ["Oggleflint"] = { 1, 0.5605, 0.3800 },
+    ["Taragaman the Hungerer"] = { 1, 0.4098, 0.5773 },
+    ["Jergosh the Invoker"] = { 1, 0.3298, 0.8454 },
+    ["Bazzalan"] = { 1, 0.4153, 0.8618 },
+  },
+  wc = {
+    ["Lady Anacondra"] = { 1, 0.2812, 0.3185 },
+    ["Lord Cobrahn"] = { 1, 0.1561, 0.5851 },
+    ["Kresh"] = { 1, 0.2578, 0.4462 },
+    -- Pythas and Skum stand in the east caves: drawn on our own (pre-4.1)
+    -- tiles, missing from the game's patch 4.1 art.
+    ["Lord Pythas"] = { 1, 0.8560, 0.2841 },
+    ["Skum"] = { 1, 0.9327, 0.8005 },
+    ["Lord Serpentis"] = { 1, 0.6248, 0.5355 },
+    ["Verdan the Everliving"] = { 1, 0.5641, 0.4742 },
+  },
+  dm = {
+    ["Rhahk'Zor"] = { 1, 0.3770, 0.6122 },
+    ["Sneed's Shredder"] = { 1, 0.4929, 0.8711 },
+    ["Gilnid"] = { 1, 0.6028, 0.5705 },
+    ["Mr. Smite"] = { 2, 0.5607, 0.2649 },
+    ["Captain Greenskin"] = { 2, 0.6064, 0.3754 },
+    ["Edwin VanCleef"] = { 2, 0.6060, 0.4588 },
+    ["Cookie"] = { 2, 0.6738, 0.3993 },
+  },
+  sfk = {
+    ["Archmage Arugal"] = { 6, 0.6390, 0.2003 },
+  },
+  bfd = {
+    ["Lady Sarevess"] = { 1, 0.1008, 0.3601 },
+    ["Aku'mai"] = { 2, 0.8559, 0.8665 },
+  },
+  stocks = {
+    ["Targorr the Dread"] = { 1, 0.4987, 0.2422 },
+    ["Kam Deepfury"] = { 1, 0.6920, 0.3094 },
+    ["Hamhock"] = { 1, 0.7817, 0.4566 },
+    ["Bazil Thredd"] = { 1, 0.8641, 0.5200 },
+    ["Dextren Ward"] = { 1, 0.1455, 0.2136 },
+    ["Bruegal Ironknuckle"] = { 1, 0.3811, 0.2403 },
+  },
+  rfk = {
+    ["Roogug"] = { 1, 0.6482, 0.4209 },
+    ["Aggem Thorncurse"] = { 1, 0.8084, 0.5445 },
+    ["Death Speaker Jargba"] = { 1, 0.8795, 0.4139 },
+    ["Overlord Ramtusk"] = { 1, 0.5688, 0.2984 },
+    ["Agathelos the Raging"] = { 1, 0.1120, 0.7236 },
+    ["Charlga Razorflank"] = { 1, 0.2643, 0.3243 },
+  },
+  sm = {
+    ["Interrogator Vishas"] = { 1, 0.7154, 0.5894 },
+    ["Bloodmage Thalnos"] = { 1, 0.2440, 0.5077 },
+    ["Houndmaster Loksey"] = { 2, 0.3079, 0.8780 },
+    ["Arcanist Doan"] = { 2, 0.8321, 0.7451 },
+    ["Herod"] = { 3, 0.7865, 0.1077 },
+    ["High Inquisitor Fairbanks"] = { 4, 0.5541, 0.2611 },
+    ["Scarlet Commander Mograine"] = { 4, 0.4914, 0.2718 },
+    ["High Inquisitor Whitemane"] = { 4, 0.4904, 0.1688 },
+  },
+  rfd = {
+    ["Mordresh Fire Eye"] = { 1, 0.8582, 0.4568 },
+    ["Glutton"] = { 1, 0.3852, 0.4524 },
+    ["Amnennar the Coldbringer"] = { 1, 0.4499, 0.5906 },
+  },
+  ulda = {
+    ["Revelosh"] = { 1, 0.5415, 0.7216 },
+    ["The Lost Dwarves"] = { 1, 0.5907, 0.9354 },
+    ["Ironaya"] = { 1, 0.3754, 0.7385 },
+    ["Obsidian Sentinel"] = { 1, 0.2877, 0.6178 },
+  },
+  zf = {
+    ["Antu'sul"] = { 1, 0.6901, 0.2560 },
+    ["Theka the Martyr"] = { 1, 0.5532, 0.2970 },
+    ["Witch Doctor Zum'rah"] = { 1, 0.4402, 0.1516 },
+    ["Sergeant Bly"] = { 1, 0.2355, 0.1833 },
+    ["Hydromancer Velratha"] = { 1, 0.2995, 0.3834 },
+    ["Ruuzlu"] = { 1, 0.4408, 0.3487 },
+    ["Chief Ukorz Sandscalp"] = { 1, 0.4393, 0.3517 },
+  },
+  mara = {
+    ["Noxxion"] = { 1, 0.3475, 0.1071 },
+    ["Razorlash"] = { 1, 0.1617, 0.3402 },
+    ["Landslide"] = { 2, 0.4056, 0.4824 },
+    ["Tinkerer Gizlock"] = { 2, 0.4840, 0.6856 },
+    ["Rotgrip"] = { 2, 0.3326, 0.7706 },
+    ["Princess Theradras"] = { 2, 0.2416, 0.7836 },
+  },
+  st = {
+    ["Atal'alarion"] = { 1, 0.4981, 0.4861 },
+    ["Dreamscythe"] = { 1, 0.4397, 0.4279 },
+    ["Weaver"] = { 1, 0.4533, 0.4396 },
+    ["Jammal'an the Prophet"] = { 1, 0.7609, 0.3685 },
+    ["Ogom the Wretched"] = { 1, 0.7716, 0.3680 },
+    ["Morphaz"] = { 1, 0.4887, 0.8901 },
+    ["Hazzas"] = { 1, 0.5208, 0.8896 },
+    ["Shade of Eranikus"] = { 1, 0.6885, 0.8702 },
+  },
+  brd = {
+    ["High Interrogator Gerstahn"] = { 1, 0.4752, 0.9340 },
+    ["The Seven"] = { 2, 0.5670, 0.2178 },
+    ["Magmus"] = { 2, 0.8173, 0.1187 },
+    ["Emperor Dagran Thaurissan"] = { 2, 0.9316, 0.1193 },
+  },
+  dire = {
+    ["Stomper Kreeg"] = { 2, 0.6197, 0.6574 },
+    ["Guard Fengus"] = { 2, 0.4935, 0.8155 },
+    ["Guard Slip'kik"] = { 2, 0.2775, 0.5878 },
+    ["Captain Kromcrush"] = { 2, 0.3183, 0.4970 },
+    ["King Gordok"] = { 2, 0.3190, 0.2611 },
+    ["Immol'thar"] = { 5, 0.3501, 0.5762 },
+    ["Alzzin the Wildshaper"] = { 7, 0.5536, 0.2695 },
+  },
+  scholo = {
+    ["Ras Frostwhisper"] = { 4, 0.4061, 0.8836 },
+  },
+  strat = {
+    ["Cannon Master Willey"] = { 1, 0.0359, 0.5014 },
+    ["Archivist Galford"] = { 1, 0.2713, 0.7513 },
+    ["Balnazzar"] = { 1, 0.1879, 0.8366 },
+    ["Magistrate Barthilas"] = { 2, 0.6534, 0.7550 },
+    ["Baroness Anastari"] = { 2, 0.7495, 0.4685 },
+    ["Nerub'enkan"] = { 2, 0.5637, 0.4690 },
+    ["Maleki the Pallid"] = { 2, 0.6819, 0.1993 },
+    ["Baron Rivendare"] = { 2, 0.3722, 0.1993 },
+  },
+}
+
+-- Where a boss stands: { floor, x, y } from Dungeons.bossSpots, or nil.
+function Dungeons.BossSpot(dungeon, name)
+  local spots = dungeon and Dungeons.bossSpots and Dungeons.bossSpots[dungeon.key or ""]
+  if not spots or type(name) ~= "string" then return nil end
+  local want = name:lower()
+  for boss, s in pairs(spots) do
+    if boss:lower() == want then return { floor = s[1], x = s[2], y = s[3] } end
+  end
+end
+
 -- The boss names to offer for a dungeon: its own list, then any other names
 -- given in `extra` (bosses typed or learned in your routes), without doubles.
 function Dungeons.BossNames(dungeon, extra)
@@ -150,6 +303,8 @@ end
 
 -- Texture (path or file ID) for a tile of a dungeon's floor.
 function Dungeons.Tile(dungeon, floor, tile)
+  local own = Dungeons.ownArt[dungeon.key or ""]
+  if own and own[floor] then return own[floor] .. tile end
   if dungeon.folder then return Dungeons.TilePath(dungeon.folder, floor, tile) end
   if dungeon.fileBase and floor == 1 then
     if tile == 1 then return dungeon.fileBase end
