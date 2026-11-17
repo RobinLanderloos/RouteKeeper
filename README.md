@@ -17,7 +17,7 @@ Made mainly for me and my friends. It's shared in case it's useful to others too
   - A run starts over when you come back after 30 minutes or more, or with **Reset**.
 - **Sharing:** **Export** gives a `!RK1!...` string to copy; **Import** (or `/rk import`) reads one. A newer revision of a route you have updates it; you're asked before anything is overwritten. **Export all** doubles as a backup.
 
-Maps are the game's own dungeon maps. Dungeons without one in the game files (the new Forever dungeons) get a grid.
+Maps are the game's own dungeon maps. Dungeons without one in the game files (the new Forever dungeons) get a grid. Wailing Caverns uses the older map from before patch 4.1, which still shows the eastern caves Forever has (Blizzard's art, credited in `Media/Maps/README.md`). Bosses are pinned on the map where they stand.
 
 ## Development
 
