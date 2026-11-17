@@ -16,6 +16,7 @@ Core\Geometry.lua
 Core\Undo.lua
 Core\Progress.lua
 Core\MapView.lua
+Game\Skin.lua
 Game\Report.lua
 Game\Widgets.lua
 Game\Store.lua

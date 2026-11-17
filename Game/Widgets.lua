@@ -37,7 +37,7 @@ function W.Escape(text) return (tostring(text or ""):gsub("|", "||")) end
 function W.Unescape(text) return (tostring(text or ""):gsub("||", "|")) end
 
 function W.Window(name, width, height, title)
-  local f = CreateFrame("Frame", name, UIParent, "BasicFrameTemplateWithInset")
+  local f = ns.Skin.Window(CreateFrame("Frame", name, UIParent))
   f:SetSize(width, height)
   f:SetPoint("CENTER")
   f:SetMovable(true)
@@ -47,17 +47,14 @@ function W.Window(name, width, height, title)
   f:SetScript("OnDragStart", function(self) if not self.locked then self:StartMoving() end end)
   f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
   f:SetFrameStrata("HIGH")
-  f.title = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-  f.title:SetPoint("TOP", 0, -5)
-  f.title:SetPoint("LEFT", 30, 0)
-  f.title:SetPoint("RIGHT", -30, 0)
+  f.title = f.TitleText
   f.title:SetText(title or "")
   f:Hide()
   return f
 end
 
 function W.Button(parent, text, width, height, onClick)
-  local b = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+  local b = ns.Skin.Button(CreateFrame("Button", nil, parent))
   b:SetSize(width or 80, height or 22)
   b:SetText(text)
   if onClick then b:SetScript("OnClick", W.Guard(onClick)) end
@@ -86,7 +83,7 @@ end
 -- One-line edit box. onChange(text) only for what the player typed;
 -- onFocus() when they start editing (used to save an undo step).
 function W.EditBox(parent, width, onChange, onFocus)
-  local e = CreateFrame("EditBox", nil, parent, "InputBoxTemplate")
+  local e = ns.Skin.Input(CreateFrame("EditBox", nil, parent))
   e:SetSize(width, 20)
   e:SetAutoFocus(false)
   e:SetScript("OnEscapePressed", e.ClearFocus)
@@ -100,16 +97,13 @@ end
 
 -- Multi-line edit box in a scroll frame.
 function W.MultiEdit(parent, width, height, onChange, onFocus)
-  local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+  local holder = CreateFrame("Frame", nil, parent)
   holder:SetSize(width, height)
-  if holder.SetBackdrop then
-    holder:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1 })
-    holder:SetBackdropColor(0, 0, 0, 0.5)
-    holder:SetBackdropBorderColor(0.4, 0.4, 0.4, 1)
-  end
+  ns.Skin.Panel(holder, ns.Skin.colors.input)
   local scroll = CreateFrame("ScrollFrame", nil, holder, "UIPanelScrollFrameTemplate")
+  ns.Skin.ScrollBar(scroll)
   scroll:SetPoint("TOPLEFT", 4, -4)
-  scroll:SetPoint("BOTTOMRIGHT", -26, 4)
+  scroll:SetPoint("BOTTOMRIGHT", -16, 4)
   local e = CreateFrame("EditBox", nil, scroll)
   e:SetMultiLine(true)
   e:SetAutoFocus(false)
@@ -156,13 +150,9 @@ W.ACT_LABEL = { start = "Pick up", objective = "Do", ["end"] = "Turn in" }
 local pick
 function W.PickList(anchor, items, onPick, emptyText)
   if not pick then
-    pick = CreateFrame("Frame", "RouteKeeperPickList", UIParent, "BackdropTemplate")
+    pick = CreateFrame("Frame", "RouteKeeperPickList", UIParent)
     pick:SetFrameStrata("FULLSCREEN_DIALOG")
-    if pick.SetBackdrop then
-      pick:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1 })
-      pick:SetBackdropColor(0.05, 0.05, 0.05, 0.97)
-      pick:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-    end
+    ns.Skin.Panel(pick, { 0.06, 0.05, 0.04, 0.97 })
     pick:EnableMouse(true)
     pick:SetClampedToScreen(true)
     pick.rows = {}
@@ -180,10 +170,12 @@ function W.PickList(anchor, items, onPick, emptyText)
     if not row then
       row = CreateFrame("Button", nil, pick)
       row:SetHeight(18)
-      row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+      local hover = row:CreateTexture(nil, "HIGHLIGHT")
+      hover:SetAllPoints()
+      hover:SetColorTexture(ns.Skin.accent[1], ns.Skin.accent[2], ns.Skin.accent[3], 0.14)
       row.sel = row:CreateTexture(nil, "BACKGROUND")
       row.sel:SetAllPoints()
-      row.sel:SetColorTexture(0.3, 0.85, 1, 0.25)
+      row.sel:SetColorTexture(ns.Skin.accent[1], ns.Skin.accent[2], ns.Skin.accent[3], 0.25)
       row.text = W.Label(row, "", "GameFontHighlightSmall")
       row.text:SetPoint("LEFT", 6, 0)
       row.text:SetPoint("RIGHT", -6, 0)

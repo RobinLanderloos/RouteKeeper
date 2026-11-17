@@ -329,8 +329,10 @@ local function stepList(parent)
     b:SetPoint("TOPLEFT", PANEL_X, -106 - (i - 1) * 18)
     b.hl = b:CreateTexture(nil, "BACKGROUND")
     b.hl:SetAllPoints()
-    b.hl:SetColorTexture(0.3, 0.85, 1, 0.25)
-    b:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+    b.hl:SetColorTexture(ns.Skin.accent[1], ns.Skin.accent[2], ns.Skin.accent[3], 0.25)
+    local hover = b:CreateTexture(nil, "HIGHLIGHT")
+    hover:SetAllPoints()
+    hover:SetColorTexture(ns.Skin.accent[1], ns.Skin.accent[2], ns.Skin.accent[3], 0.14)
     b.text = W.Label(b, "", "GameFontHighlightSmall")
     b.text:SetPoint("LEFT", 4, 0)
     b.text:SetPoint("RIGHT", -4, 0)
@@ -502,7 +504,7 @@ local function markerDetail(parent)
     b.sel = b:CreateTexture(nil, "BACKGROUND")
     b.sel:SetPoint("TOPLEFT", -2, 2)
     b.sel:SetPoint("BOTTOMRIGHT", 2, -2)
-    b.sel:SetColorTexture(0.3, 0.85, 1, 0.7)
+    b.sel:SetColorTexture(ns.Skin.accent[1], ns.Skin.accent[2], ns.Skin.accent[3], 0.7)
     b:SetScript("OnClick", function()
       local m = selectedMarker()
       state.lastIcon = n
@@ -675,7 +677,7 @@ local function refreshNow(quick)
   ui.floorNext:SetEnabled(#floors > 1)
   for _, b in ipairs(ui.tools) do
     b:SetEnabled(r ~= nil)
-    if b.tool == state.tool then b:LockHighlight() else b:UnlockHighlight() end
+    ns.Skin.SetSelected(b, b.tool == state.tool)
   end
   local hint = HINTS[state.tool]
   if (state.tool == "path" or state.tool == "draw") and not state.selected then hint = "Select the step this path leads to first." end
